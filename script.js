@@ -54,26 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
         bgOverlay.style.opacity = '0.0'; 
         if (vignette) vignette.style.opacity = '0.8';
 
-        const categoryGrid = document.querySelector('.category-grid');
-        if (document.body.classList.contains('page-photos') && categoryGrid && !document.querySelector('.select-cat-title')) {
-            const titleContainer = document.createElement('div');
-            titleContainer.className = 'select-cat-title';
-            titleContainer.style.gridColumn = '1 / -1';
-            titleContainer.style.textAlign = 'center';
-            titleContainer.style.marginBottom = '2rem';
-            
-            const titleText = document.createElement('h2');
-            titleText.textContent = 'PHOTO CATEGORIES';
-            titleText.style.fontFamily = "'Montserrat', sans-serif";
-            titleText.style.fontWeight = '100';
-            titleText.style.letterSpacing = '10px';
-            titleText.style.fontSize = '2rem';
-            titleText.style.color = '#fff';
-            
-            titleContainer.appendChild(titleText);
-            categoryGrid.insertBefore(titleContainer, categoryGrid.firstChild);
-        }
-
         const preloadedBgUrls = {};
         const catData = {
             'real-estate': { count: 40, path: 'assets/photos/real-estate/re-' },
@@ -115,14 +95,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 prepNextBackground(cat);
             });
             
-           item.addEventListener('mouseleave', () => {
-               // New fix: instantly clears the background to avoid the default flashing
-               bgOverlay.style.backgroundImage = 'none';
-               bgOverlay.style.opacity = '0.0';
-               if (!document.body.classList.contains('page-multimedia')) {
-               if(vignette) vignette.style.opacity = '0.0';
+            item.addEventListener('mouseleave', () => {
+                bgOverlay.style.backgroundImage = 'none';
+                bgOverlay.style.opacity = '0.0';
+                if (!document.body.classList.contains('page-multimedia')) {
+                    if(vignette) vignette.style.opacity = '0.0';
                 }
-           });
+            });
         });
     }
 
@@ -257,7 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // 6. ABOUT PAGE SKILLS ANIMATION
     // ==========================================
     if (document.body.classList.contains('page-about')) {
-        // --- Circular Software Skills (Sped Up) ---
         const skillObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -271,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         el.style.background = `conic-gradient(#222 ${100 - count}%, ${color} ${100 - count}%)`;
                         el.querySelector('.percent-text').textContent = count + '%';
                         if (count >= percent) clearInterval(interval);
-                    }, 10); // Sped up from 20ms to 10ms
+                    }, 10);
                     
                     skillObserver.unobserve(el);
                 }
@@ -280,7 +258,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.querySelectorAll('.skill-circle').forEach(circle => skillObserver.observe(circle));
 
-        // --- Bar Loader Skills ---
         const barObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -289,11 +266,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     const pctText = row.querySelector('.bar-skill-percent');
                     const percent = parseInt(row.getAttribute('data-percent'));
                     
-                    // Fade in text and trigger CSS width transition
                     pctText.classList.add('show-percent');
                     setTimeout(() => { fill.style.width = percent + '%'; }, 100);
                     
-                    // Match numbers to the CSS transition speed
                     let count = 0;
                     const stepTime = 1500 / percent; 
                     
