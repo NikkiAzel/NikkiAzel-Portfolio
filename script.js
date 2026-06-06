@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.style.setProperty('--mouse-y', `${e.clientY}px`);
         });
 
-        // Split Hero Name for Glow Effect
         const heroName = document.querySelector('.hero-name');
         if (heroName) {
             const text = heroName.textContent;
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Magnet Logo
         const magnet = document.querySelector('.magnet-logo');
         if (magnet && window.innerWidth > 768) {
             magnet.addEventListener('mousemove', (e) => {
@@ -43,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 2. DASHBOARD BACKGROUND HOVER (Photos & Multimedia)
+    // 2. DASHBOARD BACKGROUND "LOOKAHEAD PRELOADER" 
     // ==========================================
     const bgOverlay = document.getElementById('bg-overlay-dash');
     const vignette = document.querySelector('.vignette');
@@ -56,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
         bgOverlay.style.opacity = '0.0'; 
         if (vignette) vignette.style.opacity = '0.8';
 
-        // Add dynamic title if on photos page
         const categoryGrid = document.querySelector('.category-grid');
         if (document.body.classList.contains('page-photos') && categoryGrid && !document.querySelector('.select-cat-title')) {
             const titleContainer = document.createElement('div');
@@ -77,35 +74,36 @@ document.addEventListener("DOMContentLoaded", () => {
             categoryGrid.insertBefore(titleContainer, categoryGrid.firstChild);
         }
 
-        const tracker = {}; 
+        const preloadedBgUrls = {};
+        const catData = {
+            'real-estate': { count: 40, path: 'assets/photos/real-estate/re-' },
+            'automotive': { count: 67, path: 'assets/photos/auto/a-' },
+            'wedding': { count: 21, path: 'assets/photos/wedding/w-' },
+            'food': { count: 187, path: 'assets/photos/food/f-' },
+            'profile': { count: 20, path: 'assets/photos/profile/p-' },
+            'product': { count: 18, path: 'assets/photos/product/pr-' },
+            'studio': { count: 30, path: 'assets/photos/studio/s-' },
+            'graphic': { count: 23, path: 'assets/photos/graphic/g-' },
+            'video': { count: 3, path: 'assets/photos/video/v-' }
+        };
+
+        const prepNextBackground = (cat) => {
+            if (!catData[cat]) return;
+            const data = catData[cat];
+            let randomNum = Math.floor(Math.random() * data.count) + 1;
+            let imgUrl = `${data.path}${randomNum}.jpg`;
+            preloadedBgUrls[cat] = imgUrl;
+            
+            const img = new Image();
+            img.src = imgUrl;
+        };
+
+        catItems.forEach(item => prepNextBackground(item.getAttribute('data-category')));
 
         catItems.forEach(item => {
             item.addEventListener('mouseenter', () => {
                 const cat = item.getAttribute('data-category');
-                let imgUrl = "";
-                let count = 0;
-                let path = "";
-
-                if (cat === 'real-estate') { count = 40; path = 'assets/photos/real-estate/re-'; }
-                else if (cat === 'automotive') { count = 67; path = 'assets/photos/auto/a-'; }
-                else if (cat === 'wedding') { count = 21; path = 'assets/photos/wedding/w-'; }
-                else if (cat === 'food') { count = 187; path = 'assets/photos/food/f-'; }
-                else if (cat === 'profile') { count = 20; path = 'assets/photos/profile/p-'; }
-                else if (cat === 'product') { count = 18; path = 'assets/photos/product/pr-'; }
-                else if (cat === 'studio') { count = 30; path = 'assets/photos/studio/s-'; }
-                else if (cat === 'graphic') { count = 23; path = 'assets/photos/graphic/g-'; }
-                else if (cat === 'video') { count = 3; path = 'assets/photos/video/v-'; }
-
-                if (count > 0) {
-                    let randomNum = Math.floor(Math.random() * count) + 1;
-                    if (count > 1) {
-                        while (randomNum === tracker[cat]) {
-                            randomNum = Math.floor(Math.random() * count) + 1;
-                        }
-                    }
-                    tracker[cat] = randomNum;
-                    imgUrl = `${path}${randomNum}.jpg`;
-                }
+                const imgUrl = preloadedBgUrls[cat]; 
 
                 if (imgUrl) {
                     bgOverlay.style.backgroundImage = `url('${imgUrl}')`;
@@ -113,21 +111,23 @@ document.addEventListener("DOMContentLoaded", () => {
                     bgOverlay.style.opacity = '1'; 
                     if(vignette) vignette.style.opacity = '1';
                 }
+                
+                prepNextBackground(cat);
             });
             
-            item.addEventListener('mouseleave', () => {
-                bgOverlay.style.backgroundImage = `url('${defaultBg}')`;
-                bgOverlay.style.backgroundPosition = "center center";
-                bgOverlay.style.opacity = '0.0';
-                if (!document.body.classList.contains('page-multimedia')) {
-                    if(vignette) vignette.style.opacity = '0.0';
+           item.addEventListener('mouseleave', () => {
+               // New fix: instantly clears the background to avoid the default flashing
+               bgOverlay.style.backgroundImage = 'none';
+               bgOverlay.style.opacity = '0.0';
+               if (!document.body.classList.contains('page-multimedia')) {
+               if(vignette) vignette.style.opacity = '0.0';
                 }
-            });
+           });
         });
     }
 
     // ==========================================
-    // 3. PHOTOS PAGE SLIDERS (.page-photos)
+    // 3. PHOTOS PAGE "NEIGHBOR PRELOADER" SLIDERS
     // ==========================================
     if (document.body.classList.contains('page-photos')) {
         const categoryImages = {
@@ -151,6 +151,14 @@ document.addEventListener("DOMContentLoaded", () => {
             
             imgEl.src = imgList[currentIndex];
 
+            const preloadNeighbors = (index) => {
+                const nextIdx = (index + 1) % imgList.length;
+                const prevIdx = (index - 1 + imgList.length) % imgList.length;
+                const nextImg = new Image(); nextImg.src = imgList[nextIdx];
+                const prevImg = new Image(); prevImg.src = imgList[prevIdx];
+            };
+            preloadNeighbors(currentIndex);
+
             const changeSlide = (direction) => {
                 if (isAnimating) return; 
                 isAnimating = true;
@@ -172,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     imgEl.src = imgList[currentIndex];
                     imgEl.style.opacity = 1;
                     isAnimating = false; 
+                    preloadNeighbors(currentIndex);
                 }, 600);
             };
 
@@ -223,8 +232,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 5. GLOBAL LOGIC (Observers & Lightbox)
     // ==========================================
-    
-    // Headline Pop-up Observation
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) { entry.target.classList.add('reveal-active'); } 
@@ -233,7 +240,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { threshold: 0.5 });
     document.querySelectorAll('.reveal-text').forEach(text => revealObserver.observe(text));
 
-    // Global Lightbox
     const lightbox = document.getElementById('gallery-lightbox');
     if (lightbox) {
         const lbImg = lightbox.querySelector('.lightbox-img');
@@ -245,5 +251,63 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
         lightbox.addEventListener('click', () => lightbox.classList.remove('lightbox-active'));
+    }
+
+    // ==========================================
+    // 6. ABOUT PAGE SKILLS ANIMATION
+    // ==========================================
+    if (document.body.classList.contains('page-about')) {
+        // --- Circular Software Skills (Sped Up) ---
+        const skillObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const percent = parseInt(el.getAttribute('data-percent'));
+                    const color = el.getAttribute('data-color');
+                    let count = 0;
+                    
+                    const interval = setInterval(() => {
+                        count++;
+                        el.style.background = `conic-gradient(#222 ${100 - count}%, ${color} ${100 - count}%)`;
+                        el.querySelector('.percent-text').textContent = count + '%';
+                        if (count >= percent) clearInterval(interval);
+                    }, 10); // Sped up from 20ms to 10ms
+                    
+                    skillObserver.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.skill-circle').forEach(circle => skillObserver.observe(circle));
+
+        // --- Bar Loader Skills ---
+        const barObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const row = entry.target;
+                    const fill = row.querySelector('.bar-skill-fill');
+                    const pctText = row.querySelector('.bar-skill-percent');
+                    const percent = parseInt(row.getAttribute('data-percent'));
+                    
+                    // Fade in text and trigger CSS width transition
+                    pctText.classList.add('show-percent');
+                    setTimeout(() => { fill.style.width = percent + '%'; }, 100);
+                    
+                    // Match numbers to the CSS transition speed
+                    let count = 0;
+                    const stepTime = 1500 / percent; 
+                    
+                    const interval = setInterval(() => {
+                        count++;
+                        pctText.textContent = count + '%';
+                        if (count >= percent) clearInterval(interval);
+                    }, stepTime);
+                    
+                    barObserver.unobserve(row);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.bar-skill-row').forEach(row => barObserver.observe(row));
     }
 });

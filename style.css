@@ -25,9 +25,17 @@ html { scroll-behavior: smooth; }
 @keyframes pageFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes gradientBreathe { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-.header, .home-container, .snap-container, .gallery-grid { animation: pageFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.header, .home-container, .snap-container, .gallery-grid, .about-container { animation: pageFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .reveal-text { font-size: 2.5rem; letter-spacing: 10px; margin-bottom: 2.5rem; text-transform: uppercase; font-weight: 100; z-index: 3; text-align: center; opacity: 0; transform: scale(0.8) translateY(30px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
 .reveal-active { opacity: 1; transform: scale(1) translateY(0); }
+
+/* Rounded Rectangle Badge (Global) */
+.section-badge { 
+    display: inline-block; background: rgba(255, 255, 255, 0.08); 
+    padding: 0.6rem 2.5rem; border-radius: 30px; 
+    font-family: 'Montserrat', sans-serif; font-weight: 300; letter-spacing: 6px; 
+    font-size: 0.9rem; margin-bottom: 2.5rem; text-align: center;
+}
 
 /* ==========================================================================
    2. HOME PAGE (.page-home)
@@ -41,20 +49,42 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .magnet-logo:hover img { filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6)); }
 
 .hero-name { font-size: 2.5rem; letter-spacing: 6px; font-weight: 100; }
-.hero-title { font-size: 1rem; letter-spacing: 10px; color: #888; margin-bottom: 5rem; }
+.hero-title { font-size: 1rem; letter-spacing: 10px; color: #888; margin-bottom: 3rem; }
 
 .glow-letter { display: inline-block; transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease; }
 .glow-letter:hover { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.6), 0 0 30px rgba(255,255,255,0.4); transform: scale(1.1); cursor: default; }
 
+/* Home Icons & Clickable Badges */
 .home-icons { display: flex; gap: 7rem; }
-.icon-btn { display: flex; flex-direction: column; align-items: center; text-decoration: none; }
-.icon-btn img { width: 120px; height: 120px; filter: brightness(0.8); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-.icon-title { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 0.9rem; letter-spacing: 2px; color: #fff; margin-top: 1rem; opacity: 0; transform: translateY(10px); transition: 0.4s; }
-.icon-btn:hover img { transform: scale(1.15); filter: brightness(1); }
-.icon-btn:hover .icon-title { opacity: 1; transform: translateY(0); }
+.icon-group { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+
+/* Non-clickable Icon Wrapper */
+.icon-wrapper { cursor: default; }
+.icon-wrapper img { width: 120px; height: 120px; filter: brightness(0.8); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Tying the animation STRICTLY to hovering the badge using :has() */
+.icon-group:has(.icon-badge:hover) .icon-wrapper img { 
+    transform: scale(1.15); 
+    filter: brightness(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.6)); 
+}
+
+/* Clickable Badge Links */
+.icon-badge {
+    text-decoration: none; display: inline-block;
+    background: rgba(255, 255, 255, 0.08); 
+    padding: 0.6rem 2.5rem; border-radius: 30px; 
+    font-family: 'Montserrat', sans-serif; font-weight: 300; 
+    letter-spacing: 6px; font-size: 0.9rem; color: #fff;
+    transition: all 0.3s ease;
+}
+.icon-badge:hover {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
 
 /* ==========================================================================
-   3. PHOTOS PAGE (.page-photos)
+   3. PHOTOS & MULTIMEDIA GRIDS
    ========================================================================== */
 .snap-container { height: calc(100vh - 70px); overflow-y: scroll; scroll-snap-type: y mandatory; }
 .snap-section { height: calc(100vh - 70px); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; background-color: #000; }
@@ -63,13 +93,34 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .section-bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; filter: grayscale(100%) brightness(35%); transition: opacity 0.8s ease; z-index: 1; pointer-events: none; }
 .vignette { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(0,0,0,0) 20%, rgba(0,0,0,0.95) 100%); z-index: 2; pointer-events: none; opacity: 0; transition: opacity 0.8s ease; }
 
-.category-grid { position: relative; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; width: 90%; max-width: 1000px; }
+.category-grid { 
+    position: relative; z-index: 10; 
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; 
+    width: 90%; max-width: 1000px; justify-items: center; margin: 0 auto;
+}
+#mm-category-grid {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 4rem; width: 90%; max-width: 1000px; margin: 0 auto;
+}
 .cat-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; }
 .cat-icon-no-circle { width: 150px; height: 150px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
 .cat-icon-no-circle img { width: 100%; height: 100%; object-fit: contain; }
 .cat-title { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; color: #ffffff; margin-top: 15px; opacity: 0; transform: translateY(10px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; }
 .cat-item:hover .cat-icon-no-circle { transform: scale(1.4); }
 .cat-item:hover .cat-title { opacity: 1; transform: translateY(0); }
+
+/* --- NEW: GALLERY HEADERS (ICON + TEXT) --- */
+.gallery-header {
+    display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 2.5rem; z-index: 3;
+}
+.gallery-icon {
+    width: 50px; height: 50px; object-fit: contain; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-active .gallery-icon {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)); transform: scale(1.15);
+}
+.gallery-header h2 {
+    font-size: 2.5rem; letter-spacing: 10px; text-transform: uppercase; font-weight: 100; margin-bottom: 0;
+}
 
 .slider-wrapper { width: 70vw; max-width: 950px; aspect-ratio: 3 / 2; border-radius: 40px; overflow: hidden; position: relative; z-index: 3; background: #050505; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
 .slider-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.6s ease-in-out; }
@@ -78,21 +129,16 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .btn-next { right: 20px; }
 
 /* ==========================================================================
-   4. MULTIMEDIA PAGE (.page-multimedia)
+   4. MULTIMEDIA GALLERIES
    ========================================================================== */
-/* Scoped overrides specifically to allow multimedia galleries to scroll */
 .page-multimedia .snap-section.has-gallery, .page-multimedia #studio-arts { height: auto !important; min-height: 100vh !important; overflow-y: auto !important; display: block !important; padding-top: 100px; padding-bottom: 50px; background-color: #000; }
-.page-multimedia .category-grid { animation: pageFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; width: 90%; max-width: 1400px; margin: 0 auto; z-index: 5; }
 .masonry-grid { display: block; column-count: 3; column-gap: 15px; width: 90%; max-width: 1400px; margin: 0 auto; padding-bottom: 50px; }
-
 .gallery-item { break-inside: avoid; margin-bottom: 15px; overflow: hidden; border-radius: 10px; background: #080808; cursor: zoom-in; border: 1px solid rgba(255, 255, 255, 0.15); box-sizing: border-box; transition: transform 0.3s ease; }
 .gallery-grid .gallery-item { aspect-ratio: 1 / 1; }
 .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .masonry-grid .gallery-item img { height: auto; }
 .gallery-item:hover { transform: scale(1.02); border-color: rgba(255, 255, 255, 0.5); }
-
 .video-grid { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 30px; width: 90%; max-width: 1200px; margin: 0 auto; padding: 20px; }
 .video-item { flex: 0 0 350px; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.15); transition: transform 0.3s ease, border-color 0.3s ease; display: block; }
 .video-item:hover { transform: scale(1.05); border-color: rgba(255, 255, 255, 0.5); }
@@ -107,20 +153,68 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .lightbox-active .lightbox-img { transform: scale(1); }
 
 /* ==========================================================================
-   6. RESPONSIVE DESIGN
+   6. ABOUT PAGE (.page-about)
+   ========================================================================== */
+.about-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center; min-height: calc(100vh - 70px); }
+.about-hero-logo { width: 70px; margin-bottom: 1.5rem; }
+.about-headline { font-size: 3rem; letter-spacing: 10px; font-weight: 100; margin-bottom: 2rem; font-family: 'Montserrat', sans-serif; }
+.about-text { max-width: 700px; margin-bottom: 3rem; line-height: 1.8; font-weight: 300; font-size: 1rem; }
+
+/* Contact Icon */
+.contact-box { margin-bottom: 5rem; display: flex; justify-content: center; }
+.linkedin-icon { width: 45px; filter: brightness(0.7); transition: transform 0.3s ease, filter 0.3s ease; }
+.linkedin-icon:hover { transform: scale(1.15); filter: brightness(1); }
+
+/* SIDE-BY-SIDE: Master Layout for Skills */
+.skills-container { 
+    width: 100%; max-width: 1100px; display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 6rem;
+}
+.software-section, .bar-skills-section { 
+    flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%;
+}
+
+/* Circular Skills (Software) */
+.skills-wrapper { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; max-width: 500px; }
+.skill-circle { 
+    width: 100px; height: 100px; border-radius: 50%; 
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: conic-gradient(#222 100%, transparent 0); position: relative;
+}
+.skill-circle::after { content: ""; position: absolute; width: 84px; height: 84px; background: #000; border-radius: 50%; }
+.skill-circle img { width: 45px; position: relative; z-index: 2; margin-bottom: 5px; }
+.percent-text { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 0.75rem; position: relative; z-index: 2; }
+
+/* Bar Loader Skills */
+.bar-skills-section { max-width: 450px; }
+.bar-skill-row { display: flex; align-items: center; gap: 15px; margin-bottom: 1.8rem; width: 100%; }
+.bar-skill-label { display: flex; align-items: center; gap: 15px; width: 140px; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; }
+.bar-skill-label img { width: 25px; object-fit: contain; }
+.bar-skill-track { flex: 1; height: 8px; background: #222; border-radius: 4px; overflow: hidden; position: relative; }
+.bar-skill-fill { height: 100%; width: 0%; border-radius: 4px; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.bar-skill-percent { width: 45px; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; text-align: right; opacity: 0; transition: opacity 0.5s ease; }
+.show-percent { opacity: 1; }
+
+/* ==========================================================================
+   7. RESPONSIVE DESIGN
    ========================================================================== */
 @media (max-width: 1300px) { .video-item { flex: 0 0 45%; } }
 @media (max-width: 1024px) { .masonry-grid { column-count: 2; } }
+@media (max-width: 850px) {
+    .skills-container { flex-direction: column; align-items: center; gap: 4rem; }
+}
 @media (max-width: 768px) {
     .header { padding: 1rem 1.5rem; }
     .nav-links { gap: 1.5rem; }
     .hero-name { font-size: 1.8rem; text-align: center; }
     .home-icons { gap: 3rem; }
-    .category-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+    .category-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; width: 100%; } 
     .slider-wrapper { width: 90vw; border-radius: 20px; }
     .cat-icon-no-circle { width: 80px; height: 80px; }
     .reveal-text { font-size: 1.5rem; }
+    .gallery-header h2 { font-size: 1.5rem; } /* Scaled down header text on mobile */
 }
-@media (max-width: 600px) { .masonry-grid { column-count: 1; } .video-item { flex: 0 0 90%; } }
+@media (max-width: 600px) { 
+    .masonry-grid { column-count: 1; } 
+    .video-item { flex: 0 0 90%; } 
+}
 .footer-section { height: auto !important; min-height: 80px; scroll-snap-align: end; }
-

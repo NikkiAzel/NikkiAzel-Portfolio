@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multimedia | NAA.</title>
+    <title>NAA | Multimedia</title>
+    <link rel="icon" href="assets/logo/logo.png" type="image/png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="page-multimedia">
@@ -15,6 +16,7 @@
         </a>
         <ul class="nav-links">
             <li><a href="index.html">HOME</a></li>
+            <li><a href="about.html">ABOUT</a></li>
             <li><a href="photos.html">PHOTOS</a></li>
             <li><a href="multimedia.html" class="active">MULTIMEDIA</a></li>
         </ul>
@@ -24,57 +26,46 @@
         <section class="snap-section" id="multimedia-dash">
             <div class="section-bg-overlay" id="bg-overlay-dash"></div>
             <div class="vignette"></div>
-            <div class="category-grid">
-                <h2 style="grid-column: 1 / -1; text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 100; letter-spacing: 10px; font-size: 2rem; color: #fff; margin-bottom: 2rem;">
-                    MULTIMEDIA CATEGORIES
-                </h2>
-                <a href="#studio-arts" class="cat-item" data-category="studio">
-                    <div class="cat-icon-no-circle"><img src="assets/icons/icon-sculpture.png" alt="Studio"></div>
-                    <span class="cat-title">STUDIO ARTS</span>
-                </a>
-                <a href="#graphic" class="cat-item" data-category="graphic">
-                    <div class="cat-icon-no-circle"><img src="assets/icons/icon-painting.png" alt="Graphic"></div>
-                    <span class="cat-title">GRAPHIC</span>
-                </a>
-                <a href="#video" class="cat-item" data-category="video">
-                    <div class="cat-icon-no-circle"><img src="assets/icons/icon-video.png" alt="Video"></div>
-                    <span class="cat-title">VIDEO</span>
-                </a>
+            <div class="category-grid" id="mm-category-grid">
+                <h2 style="width: 100%; text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 100; letter-spacing: 10px; font-size: 2rem; color: #fff; margin-bottom: 2rem;">MULTIMEDIA CATEGORIES</h2>
+                <a href="#studio-arts" class="cat-item" data-category="studio"><div class="cat-icon-no-circle"><img src="assets/icons/icon-sculpture.png" alt="Studio"></div><span class="cat-title">STUDIO ARTS</span></a>
+                <a href="#graphic" class="cat-item" data-category="graphic"><div class="cat-icon-no-circle"><img src="assets/icons/icon-painting.png" alt="Graphic"></div><span class="cat-title">GRAPHIC</span></a>
+                <a href="#video" class="cat-item" data-category="video"><div class="cat-icon-no-circle"><img src="assets/icons/icon-video.png" alt="Video"></div><span class="cat-title">VIDEO</span></a>
             </div>
         </section>
 
         <section class="snap-section" id="studio-arts">
-            <h2 class="reveal-text">STUDIO ARTS</h2>
+            <div class="gallery-header reveal-text">
+                <img src="assets/icons/icon-sculpture.png" class="gallery-icon" alt="Icon">
+                <h2>STUDIO ARTS</h2>
+            </div>
             <div class="gallery-grid" id="studio-gallery"></div> 
         </section>
 
         <section class="snap-section has-gallery" id="graphic">
-            <h2 class="reveal-text">GRAPHIC</h2>
+            <div class="gallery-header reveal-text">
+                <img src="assets/icons/icon-painting.png" class="gallery-icon" alt="Icon">
+                <h2>GRAPHIC</h2>
+            </div>
             <div class="masonry-grid" id="graphic-gallery"></div>
         </section>
 
         <section class="snap-section has-gallery" id="video">
-            <h2 class="reveal-text">VIDEO</h2>
+            <div class="gallery-header reveal-text">
+                <img src="assets/icons/icon-video.png" class="gallery-icon" alt="Icon">
+                <h2>VIDEO</h2>
+            </div>
             <div class="video-grid">
-                <a href="https://drive.google.com/file/d/1xUOENY7twR0dfjxNNxqkz6fVdhkTdD8g/view?usp=drive_link" target="_blank" class="video-item">
-                    <img src="assets/photos/video/v-1.jpg" alt="Video 1">
-                </a>
-                <a href="https://drive.google.com/file/d/1oDRqSoS8VwAId5CoLkXSmqcTboIK1iiG/view?usp=drive_link" target="_blank" class="video-item">
-                    <img src="assets/photos/video/v-2.jpg" alt="Video 2">
-                </a>
-                <a href="https://drive.google.com/file/d/1WFwDFb3wuUv1blBbQgBIfewBBko9NLO8/view?usp=drive_link" target="_blank" class="video-item">
-                    <img src="assets/photos/video/v-3.jpg" alt="Video 3">
-                </a>
+                <a href="https://drive.google.com/file/d/1xUOENY7twR0dfjxNNxqkz6fVdhkTdD8g/view?usp=drive_link" target="_blank" class="video-item"><img src="assets/photos/video/v-1.jpg" alt="Video 1"></a>
+                <a href="https://drive.google.com/file/d/1oDRqSoS8VwAId5CoLkXSmqcTboIK1iiG/view?usp=drive_link" target="_blank" class="video-item"><img src="assets/photos/video/v-2.jpg" alt="Video 2"></a>
+                <a href="https://drive.google.com/file/d/1WFwDFb3wuUv1blBbQgBIfewBBko9NLO8/view?usp=drive_link" target="_blank" class="video-item"><img src="assets/photos/video/v-3.jpg" alt="Video 3"></a>
             </div>
         </section>
 
         <footer class="footer footer-section">PORTFOLIO 2026</footer>
     </main>
 
-    <div class="lightbox" id="gallery-lightbox">
-        <img src="" alt="View" class="lightbox-img">
-    </div>
-
+    <div class="lightbox" id="gallery-lightbox"><img src="" alt="View" class="lightbox-img"></div>
     <script src="script.js"></script>
 </body>
 </html>
