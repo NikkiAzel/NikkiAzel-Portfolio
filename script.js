@@ -285,4 +285,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.querySelectorAll('.bar-skill-row').forEach(row => barObserver.observe(row));
     }
+// ==========================================
+    // 7. FLOATING NAVIGATION BAR LOGIC
+    // ==========================================
+    const floatingNav = document.getElementById('floating-nav');
+    
+    // Automatically detect which dashboard section to watch
+    let dashboardSection = null;
+    if (document.body.classList.contains('page-photos')) {
+        dashboardSection = document.getElementById('categories');
+    } else if (document.body.classList.contains('page-multimedia')) {
+        dashboardSection = document.getElementById('multimedia-dash');
+    }
+
+    if (floatingNav && dashboardSection) {
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                // If the dashboard is visible, hide the floating nav
+                if (entry.isIntersecting) {
+                    floatingNav.classList.remove('visible');
+                } else {
+                    // Once you scroll past the dashboard, slide the nav up!
+                    floatingNav.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 }); // Triggers when the dashboard is almost out of view
+
+        navObserver.observe(dashboardSection);
+    }
 });

@@ -215,3 +215,64 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     .nav-links a { font-size: 0.65rem; }
 }
 .footer-section { height: auto !important; min-height: 80px; scroll-snap-align: end; }
+/* ==========================================================================
+   8. FLOATING NAVIGATION BAR (STICKY BOTTOM NAV)
+   ========================================================================== */
+.floating-nav {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    /* Initially hidden: pushed down 100px and completely transparent */
+    transform: translateX(-50%) translateY(100px); 
+    opacity: 0;
+    
+    /* Glassmorphism Styling */
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.8), rgba(0, 0, 0, 0.95));
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    
+    padding: 1.2rem 2.5rem;
+    border-radius: 60px; /* Perfect pill shape */
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    z-index: 9999;
+    
+    /* Smooth slide-up transition */
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+    pointer-events: none; /* Prevents ghost clicks when invisible */
+}
+
+/* This class is toggled by script.js when you scroll down */
+.floating-nav.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.floating-nav a { display: flex; align-items: center; justify-content: center; }
+
+.float-icon {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    filter: brightness(0.6);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-nav a:hover .float-icon {
+    filter: brightness(1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+    transform: scale(1.25);
+}
+
+.separator {
+    width: 1px;
+    height: 22px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+    .floating-nav { padding: 0.7rem 1.5rem; gap: 1rem; bottom: 20px; }
+    .float-icon { width: 22px; height: 22px; }
+}
