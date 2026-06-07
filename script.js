@@ -329,4 +329,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
         navObserver.observe(dashboardSection);
     }
+// ==========================================
+    // 8. MOBILE SCROLL-SNAP ANCHOR FIX
+    // ==========================================
+    const snapContainer = document.querySelector('.snap-container');
+    
+    if (snapContainer) {
+        // Find every single anchor link on the page
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // 1. Stop the browser's buggy native jumping behavior
+                    e.preventDefault(); 
+                    
+                    // 2. Mathematically calculate the exact top position of the target
+                    const containerTop = snapContainer.getBoundingClientRect().top;
+                    const targetTop = targetElement.getBoundingClientRect().top;
+                    const exactScrollPosition = snapContainer.scrollTop + (targetTop - containerTop);
+                    
+                    // 3. Smoothly scroll the container to that exact pixel
+                    snapContainer.scrollTo({
+                        top: exactScrollPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    }
 });
