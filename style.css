@@ -122,13 +122,16 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .gallery-header { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-bottom: 2.5rem; z-index: 3; }
 .gallery-icon { width: 50px; height: 50px; object-fit: contain; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 .reveal-active .gallery-icon { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)); transform: scale(1.15); }
+/* Update this existing rule */
 .gallery-header h2 { 
-    font-family: 'Bebas Neue', sans-serif; /* NEW */
-    font-size: clamp(2.2rem, 5vw, 3rem); 
+    font-family: 'Bebas Neue', sans-serif; 
+    /* Increased from clamp(2.2rem, 5vw, 3rem) to this: */
+    font-size: clamp(3.5rem, 12vw, 5rem); 
     letter-spacing: 4px; 
     font-weight: 400; 
     margin-bottom: 0; 
     text-align: center; 
+    -webkit-text-stroke: 0.8px #ffffff;
 }
 
 .slider-wrapper { width: 100%; max-width: 950px; aspect-ratio: 3 / 2; border-radius: 40px; overflow: hidden; position: relative; z-index: 3; background: #050505; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
@@ -272,9 +275,17 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     .category-main-icon { width: 40px; }
 
     /* 6. Robust Mobile Floating Nav Sizing */
-    .floating-nav { padding: 0.7rem 1rem; gap: 0.8rem; border-radius: 40px; width: max-content; max-width: 95vw; bottom: 15px; }
-    .float-icon { width: 25px; height: 25px; }
-    .separator { height: 22px; }
+    .floating-nav { 
+        width: 90vw; /* Forces it to fill the screen edges */
+        padding: 1rem 1.5rem; 
+        gap: 1.5rem; 
+        border-radius: 40px; 
+        bottom: 20px; 
+        justify-content: space-evenly; /* Spaces icons perfectly across the width */
+        flex-wrap: wrap; /* THE MAGIC: Allows icons to wrap to a new line if needed! */
+    }
+    .float-icon { width: 35px; height: 35px; } /* Massive size increase for mobile */
+    .separator { display: none; } /* Hide separators on mobile so wrapping looks flawless */
 /* --- MOBILE ALIGNMENT FIXES --- */
 
     /* 1. Safely restore the header to the normal document flow */
@@ -306,8 +317,13 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     .icon-wrapper img { width: 60px; height: 60px; }
     .cat-icon-no-circle { width: 45px; height: 45px; }
     .cat-title { font-size: 0.55rem; letter-spacing: 0px; }
-    .floating-nav { padding: 0.6rem 0.8rem; gap: 0.6rem; max-width: 98vw; }
-    .float-icon { width: 22px; height: 22px; }
+    /* Extra safety padding for smaller phones */
+    .floating-nav { 
+        width: 95vw; /* Fills even more of the edge on tiny screens */
+        padding: 1rem; 
+        gap: 1rem; 
+    }
+    .float-icon { width: 30px; height: 30px; } /* Still much larger than your previous 22px */
     .separator { height: 20px; }
 /* ==========================================================================
    9. ULTRA-NARROW SCREEN CATCH-ALL (Sub-400px devices)
@@ -344,6 +360,11 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     .home-icons {
         gap: 0.5rem;
         width: 100%;
+    }
+/* Make the nav adapt vertically for ultra-narrow screens */
+    .floating-nav {
+        gap: 1.2rem 1rem; /* Adds row gap so wrapped icons don't touch vertically */
+        border-radius: 25px; /* Softens the corners since the box becomes taller when wrapped */
     }
 }
 }
