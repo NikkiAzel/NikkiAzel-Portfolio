@@ -285,7 +285,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.querySelectorAll('.bar-skill-row').forEach(row => barObserver.observe(row));
     }
-// ==========================================
+
+    // ==========================================
     // 7. FLOATING NAVIGATION BAR LOGIC
     // ==========================================
     const floatingNav = document.getElementById('floating-nav');
