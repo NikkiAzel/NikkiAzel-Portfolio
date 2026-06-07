@@ -14,16 +14,31 @@ document.addEventListener("DOMContentLoaded", () => {
         if (heroName) {
             const text = heroName.textContent;
             heroName.innerHTML = ''; 
-            for (let char of text) {
-                if (char === ' ') {
-                    heroName.appendChild(document.createTextNode(' '));
-                } else {
+            
+            // NEW LOGIC: Split the text into words first
+            const words = text.split(' ');
+            
+            words.forEach((word, index) => {
+                // Create a protective wrapper for the word so it never breaks mid-letter
+                const wordWrapper = document.createElement('span');
+                wordWrapper.style.display = 'inline-block';
+                wordWrapper.style.whiteSpace = 'nowrap';
+                
+                // Add the glowing letters inside the word wrapper
+                for (let char of word) {
                     const span = document.createElement('span');
                     span.textContent = char;
                     span.className = 'glow-letter';
-                    heroName.appendChild(span);
+                    wordWrapper.appendChild(span);
                 }
-            }
+                
+                heroName.appendChild(wordWrapper);
+                
+                // Add the space back between words
+                if (index < words.length - 1) {
+                    heroName.appendChild(document.createTextNode(' '));
+                }
+            });
         }
 
         const magnet = document.querySelector('.magnet-logo');
