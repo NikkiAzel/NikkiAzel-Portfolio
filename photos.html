@@ -6,6 +6,12 @@
     <title>NA | PORTFOLIO</title>
     <link rel="icon" href="assets/logo/logo.png" type="image/png">
     <link rel="stylesheet" href="style.css">
+<script>
+        // If they didn't start at the home page, instantly redirect them
+        if (!sessionStorage.getItem('enteredThroughHome')) {
+            window.location.replace('index.html');
+        }
+    </script>
 </head>
 <body class="page-photos">
     <header class="header">

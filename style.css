@@ -161,7 +161,7 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .btn-prev { left: 20px; }
 .btn-next { right: 20px; }
 
-/* ISOLATED FLUID ASPECT RATIOS FOR COMPARISON SLIDER (REVERTED) */
+/* ISOLATED FLUID ASPECT RATIOS FOR COMPARISON SLIDER */
 .slider-wrapper.fluid-comparison {
     aspect-ratio: auto !important; 
     height: auto !important;
@@ -185,6 +185,10 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
     opacity: 0; cursor: ew-resize; z-index: 10;
+    
+    /* V4 CSS LOCK: Blocks browser gestures when interacting with the handle */
+    touch-action: none; 
+    -webkit-touch-callout: none;
 }
 .comparison-line {
     position: absolute;

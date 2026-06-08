@@ -133,7 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
             'product': Array.from({ length: 18 }, (_, i) => `assets/photos/product/pr-${i + 1}.jpg`),
         };
 
-        // --- Standard Sliders ---
         document.querySelectorAll('.slider-wrapper:not(.fluid-comparison)').forEach(wrapper => {
             const imgEl = wrapper.querySelector('.slider-img');
             const cat = imgEl.getAttribute('data-category');
@@ -205,27 +204,27 @@ document.addEventListener("DOMContentLoaded", () => {
             let baIndex = 1;
             const baCount = 27; 
 
-            // Consolidated move function
             const moveSlider = (val) => {
                 afterContainer.style.clipPath = `polygon(0 0, ${val}% 0, ${val}% 100%, 0 100%)`;
                 comparisonLine.style.left = `${val}%`;
             };
 
-            // Desktop / Standard input
             baSlider.addEventListener('input', (e) => moveSlider(e.target.value));
 
-            // V3: Mobile Touch-Drag Support
+            // V4: Mobile Screen Lock Implementation
             baSlider.addEventListener('touchmove', (e) => {
+                // THE LOCK: This line physically freezes the screen's scrolling engine while dragging
+                e.preventDefault(); 
+                
                 const rect = baSlider.getBoundingClientRect();
                 const touchX = e.touches[0].clientX - rect.left;
                 const percentage = (touchX / rect.width) * 100;
                 
-                // Constrain percentage between 0 and 100
                 const constrainedVal = Math.max(0, Math.min(100, percentage));
                 
                 baSlider.value = constrainedVal;
                 moveSlider(constrainedVal);
-            }, { passive: true });
+            }, { passive: false }); // passive must be false to allow the lock to work
 
             const updateComparisonPair = () => {
                 beforeImg.src = `assets/photos/comparison/before-${baIndex}.jpg`;
