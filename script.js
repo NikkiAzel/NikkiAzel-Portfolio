@@ -133,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
             'product': Array.from({ length: 18 }, (_, i) => `assets/photos/product/pr-${i + 1}.jpg`),
         };
 
+        // --- Standard Sliders ---
         document.querySelectorAll('.slider-wrapper:not(.fluid-comparison)').forEach(wrapper => {
             const imgEl = wrapper.querySelector('.slider-img');
             const cat = imgEl.getAttribute('data-category');
@@ -202,20 +203,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (baSlider && afterContainer && comparisonLine) {
             let baIndex = 1;
-            const baCount = 32; 
+            const baCount = 27; 
 
-            baSlider.addEventListener('input', (e) => {
-                const val = e.target.value;
+            // Consolidated move function
+            const moveSlider = (val) => {
                 afterContainer.style.clipPath = `polygon(0 0, ${val}% 0, ${val}% 100%, 0 100%)`;
                 comparisonLine.style.left = `${val}%`;
-            });
+            };
+
+            // Desktop / Standard input
+            baSlider.addEventListener('input', (e) => moveSlider(e.target.value));
+
+            // V3: Mobile Touch-Drag Support
+            baSlider.addEventListener('touchmove', (e) => {
+                const rect = baSlider.getBoundingClientRect();
+                const touchX = e.touches[0].clientX - rect.left;
+                const percentage = (touchX / rect.width) * 100;
+                
+                // Constrain percentage between 0 and 100
+                const constrainedVal = Math.max(0, Math.min(100, percentage));
+                
+                baSlider.value = constrainedVal;
+                moveSlider(constrainedVal);
+            }, { passive: true });
 
             const updateComparisonPair = () => {
                 beforeImg.src = `assets/photos/comparison/before-${baIndex}.jpg`;
                 afterImg.src = `assets/photos/comparison/after-${baIndex}.jpg`;
                 baSlider.value = 50; 
-                afterContainer.style.clipPath = `polygon(0 0, 50% 0, 50% 100%, 0 100%)`;
-                comparisonLine.style.left = `50%`;
+                moveSlider(50);
             };
 
             document.getElementById('ba-next').addEventListener('click', () => {
