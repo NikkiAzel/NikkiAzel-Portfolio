@@ -15,28 +15,27 @@ document.addEventListener("DOMContentLoaded", () => {
             const text = heroName.textContent;
             heroName.innerHTML = ''; 
             
-            // NEW LOGIC: Split the text into words first
             const words = text.split(' ');
+            let globalCharIndex = 0; 
             
             words.forEach((word, index) => {
-                // Create a protective wrapper for the word so it never breaks mid-letter
                 const wordWrapper = document.createElement('span');
                 wordWrapper.style.display = 'inline-block';
                 wordWrapper.style.whiteSpace = 'nowrap';
                 
-                // Add the glowing letters inside the word wrapper
                 for (let char of word) {
                     const span = document.createElement('span');
                     span.textContent = char;
                     span.className = 'glow-letter';
+                    span.style.animationDelay = `${globalCharIndex * 0.08}s`;
                     wordWrapper.appendChild(span);
+                    globalCharIndex++;
                 }
                 
                 heroName.appendChild(wordWrapper);
-                
-                // Add the space back between words
                 if (index < words.length - 1) {
                     heroName.appendChild(document.createTextNode(' '));
+                    globalCharIndex++; 
                 }
             });
         }
@@ -56,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 2. DASHBOARD BACKGROUND "LOOKAHEAD PRELOADER" 
+    // 2. DASHBOARD BACKGROUND PRELOADER
     // ==========================================
     const bgOverlay = document.getElementById('bg-overlay-dash');
     const vignette = document.querySelector('.vignette');
@@ -71,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const preloadedBgUrls = {};
         const catData = {
+            'before-after': { count: 27, path: 'assets/photos/comparison/after-' }, 
             'real-estate': { count: 40, path: 'assets/photos/real-estate/re-' },
             'automotive': { count: 67, path: 'assets/photos/auto/a-' },
             'wedding': { count: 21, path: 'assets/photos/wedding/w-' },
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 3. PHOTOS PAGE "NEIGHBOR PRELOADER" SLIDERS
+    // 3. PHOTOS PAGE SLIDERS & COMPARISON ENGINE
     // ==========================================
     if (document.body.classList.contains('page-photos')) {
         const categoryImages = {
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
             'product': Array.from({ length: 18 }, (_, i) => `assets/photos/product/pr-${i + 1}.jpg`),
         };
 
-        document.querySelectorAll('.slider-wrapper').forEach(wrapper => {
+        document.querySelectorAll('.slider-wrapper:not(.fluid-comparison)').forEach(wrapper => {
             const imgEl = wrapper.querySelector('.slider-img');
             const cat = imgEl.getAttribute('data-category');
             const imgList = categoryImages[cat];
@@ -171,10 +171,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 imgEl.style.opacity = 0;
                 setTimeout(() => {
-                    imgEl.src = imgList[currentIndex];
-                    imgEl.style.opacity = 1;
-                    isAnimating = false; 
-                    preloadNeighbors(currentIndex);
+                    const networkImage = new Image();
+                    networkImage.onload = () => {
+                        imgEl.src = networkImage.src;
+                        imgEl.style.opacity = 1;
+                        isAnimating = false; 
+                        preloadNeighbors(currentIndex);
+                    };
+                    networkImage.src = imgList[currentIndex];
                 }, 600);
             };
 
@@ -188,6 +192,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
             slideTimer = setInterval(() => changeSlide('random'), 5000);
         });
+
+        // --- Before & After Engine Logic ---
+        const baSlider = document.getElementById('comparison-slider');
+        const afterContainer = document.getElementById('after-container');
+        const comparisonLine = document.getElementById('comparison-line');
+        const beforeImg = document.getElementById('before-img');
+        const afterImg = document.getElementById('after-img');
+
+        if (baSlider && afterContainer && comparisonLine) {
+            let baIndex = 1;
+            const baCount = 32; 
+
+            baSlider.addEventListener('input', (e) => {
+                const val = e.target.value;
+                afterContainer.style.clipPath = `polygon(0 0, ${val}% 0, ${val}% 100%, 0 100%)`;
+                comparisonLine.style.left = `${val}%`;
+            });
+
+            const updateComparisonPair = () => {
+                beforeImg.src = `assets/photos/comparison/before-${baIndex}.jpg`;
+                afterImg.src = `assets/photos/comparison/after-${baIndex}.jpg`;
+                baSlider.value = 50; 
+                afterContainer.style.clipPath = `polygon(0 0, 50% 0, 50% 100%, 0 100%)`;
+                comparisonLine.style.left = `50%`;
+            };
+
+            document.getElementById('ba-next').addEventListener('click', () => {
+                baIndex = baIndex < baCount ? baIndex + 1 : 1;
+                updateComparisonPair();
+            });
+            document.getElementById('ba-prev').addEventListener('click', () => {
+                baIndex = baIndex > 1 ? baIndex - 1 : baCount;
+                updateComparisonPair();
+            });
+        }
     }
 
     // ==========================================
@@ -248,9 +287,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 6. ABOUT PAGE SKILLS ANIMATION
+    // 6. ABOUT PAGE LOGIC & CINEMATIC OBSERVERS
     // ==========================================
     if (document.body.classList.contains('page-about')) {
+        
+        const cinematicObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    if(entry.target.classList.contains('about-hero-logo')) entry.target.classList.add('focus-active');
+                    if(entry.target.classList.contains('about-headline')) entry.target.classList.add('focus-active');
+                    cinematicObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        const aboutLogo = document.querySelector('.about-hero-logo');
+        const aboutHead = document.querySelector('.about-headline');
+        if(aboutLogo) cinematicObserver.observe(aboutLogo);
+        if(aboutHead) cinematicObserver.observe(aboutHead);
+
         const skillObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -270,7 +325,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         }, { threshold: 0.5 });
-
         document.querySelectorAll('.skill-circle').forEach(circle => skillObserver.observe(circle));
 
         const barObserver = new IntersectionObserver((entries) => {
@@ -297,7 +351,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         }, { threshold: 0.5 });
-
         document.querySelectorAll('.bar-skill-row').forEach(row => barObserver.observe(row));
     }
 
@@ -306,7 +359,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     const floatingNav = document.getElementById('floating-nav');
     
-    // Automatically detect which dashboard section to watch
     let dashboardSection = null;
     if (document.body.classList.contains('page-photos')) {
         dashboardSection = document.getElementById('categories');
@@ -317,25 +369,23 @@ document.addEventListener("DOMContentLoaded", () => {
     if (floatingNav && dashboardSection) {
         const navObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                // If the dashboard is visible, hide the floating nav
                 if (entry.isIntersecting) {
                     floatingNav.classList.remove('visible');
                 } else {
-                    // Once you scroll past the dashboard, slide the nav up!
                     floatingNav.classList.add('visible');
                 }
             });
-        }, { threshold: 0.1 }); // Triggers when the dashboard is almost out of view
+        }, { threshold: 0.1 }); 
 
         navObserver.observe(dashboardSection);
     }
-// ==========================================
+    
+    // ==========================================
     // 8. MOBILE SCROLL-SNAP ANCHOR FIX
     // ==========================================
     const snapContainer = document.querySelector('.snap-container');
     
     if (snapContainer) {
-        // Find every single anchor link on the page
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 const targetId = this.getAttribute('href');
@@ -344,15 +394,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const targetElement = document.querySelector(targetId);
                 
                 if (targetElement) {
-                    // 1. Stop the browser's buggy native jumping behavior
                     e.preventDefault(); 
                     
-                    // 2. Mathematically calculate the exact top position of the target
                     const containerTop = snapContainer.getBoundingClientRect().top;
                     const targetTop = targetElement.getBoundingClientRect().top;
                     const exactScrollPosition = snapContainer.scrollTop + (targetTop - containerTop);
                     
-                    // 3. Smoothly scroll the container to that exact pixel
                     snapContainer.scrollTo({
                         top: exactScrollPosition,
                         behavior: 'smooth'

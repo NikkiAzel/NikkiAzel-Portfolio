@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NA | Photos</title>
+    <title>NA | PORTFOLIO</title>
     <link rel="icon" href="assets/logo/logo.png" type="image/png">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -31,12 +31,31 @@
                     <div class="section-badge dashboard-badge">PHOTO CATEGORIES</div>
                 </div>
 
+                <a href="#before-after" class="cat-item" data-category="before-after"><div class="cat-icon-no-circle"><img src="assets/icons/icon-ba.png" alt="Before and After"></div><span class="cat-title">BEFORE & AFTER</span></a>
                 <a href="#real-estate" class="cat-item" data-category="real-estate"><div class="cat-icon-no-circle"><img src="assets/icons/icon-house.png" alt="Real Estate"></div><span class="cat-title">REAL ESTATE</span></a>
                 <a href="#automotive" class="cat-item" data-category="automotive"><div class="cat-icon-no-circle"><img src="assets/icons/icon-car.png" alt="Automotive"></div><span class="cat-title">AUTOMOTIVE</span></a>
                 <a href="#wedding" class="cat-item" data-category="wedding"><div class="cat-icon-no-circle"><img src="assets/icons/icon-ring.png" alt="Wedding"></div><span class="cat-title">WEDDING</span></a>
                 <a href="#food" class="cat-item" data-category="food"><div class="cat-icon-no-circle"><img src="assets/icons/icon-food.png" alt="Food"></div><span class="cat-title">FOOD</span></a>
                 <a href="#profile" class="cat-item" data-category="profile"><div class="cat-icon-no-circle"><img src="assets/icons/icon-profile.png" alt="People"></div><span class="cat-title">PEOPLE</span></a>
                 <a href="#product" class="cat-item" data-category="product"><div class="cat-icon-no-circle"><img src="assets/icons/icon-product.png" alt="Product"></div><span class="cat-title">PRODUCT</span></a>
+            </div>
+        </section>
+
+        <section class="snap-section" id="before-after">
+            <div class="gallery-header reveal-text">
+                <img src="assets/icons/icon-ba.png" class="gallery-icon" alt="Icon">
+                <h2>BEFORE & AFTER</h2>
+            </div>
+            <div class="slider-wrapper fluid-comparison comparison-slider-wrapper">
+                <img src="assets/photos/comparison/before-1.jpg" id="before-img" class="slider-img" alt="Before Image">
+                <div class="after-container" id="after-container">
+                    <img src="assets/photos/comparison/after-1.jpg" id="after-img" class="slider-img" alt="After Image">
+                </div>
+                <div class="comparison-line" id="comparison-line"></div>
+                <input type="range" min="0" max="100" value="50" class="slider-handle" id="comparison-slider">
+                
+                <button class="slider-btn btn-prev" id="ba-prev">&#10094;</button>
+                <button class="slider-btn btn-next" id="ba-next">&#10095;</button>
             </div>
         </section>
 
@@ -92,16 +111,12 @@
     </main>
 
     <nav class="floating-nav" id="floating-nav">
+        <a href="#before-after"><img src="assets/icons/icon-ba.png" class="float-icon" alt="Before & After"></a>
         <a href="#real-estate"><img src="assets/icons/icon-house.png" class="float-icon" alt="Real Estate"></a>
-        <div class="separator"></div>
         <a href="#automotive"><img src="assets/icons/icon-car.png" class="float-icon" alt="Automotive"></a>
-        <div class="separator"></div>
         <a href="#wedding"><img src="assets/icons/icon-ring.png" class="float-icon" alt="Wedding"></a>
-        <div class="separator"></div>
         <a href="#food"><img src="assets/icons/icon-food.png" class="float-icon" alt="Food"></a>
-        <div class="separator"></div>
         <a href="#profile"><img src="assets/icons/icon-profile.png" class="float-icon" alt="People"></a>
-        <div class="separator"></div>
         <a href="#product"><img src="assets/icons/icon-product.png" class="float-icon" alt="Product"></a>
     </nav>
     <script src="script.js"></script>

@@ -23,14 +23,20 @@ html { scroll-behavior: smooth; }
 /* ANIMATIONS & EFFECTS */
 @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 @keyframes pageFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes gradientBreathe { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+/* Cinematic GPU-Accelerated Radial Breathe (No Lag) */
+@keyframes radialBreathe {
+    0% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.6; }
+}
 
 .header, .home-container, .snap-container, .gallery-grid, .about-container { animation: pageFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .reveal-text { 
-    font-family: 'Bebas Neue', sans-serif; /* NEW */
-    font-size: clamp(2.2rem, 5vw, 3rem); /* Slightly larger since it's condensed */
-    letter-spacing: 4px; /* Tighter spacing */
-    font-weight: 400; /* Standard thick weight for Bebas */
+    font-family: 'Bebas Neue', sans-serif; 
+    font-size: clamp(2.2rem, 5vw, 3rem); 
+    letter-spacing: 4px; 
+    font-weight: 400; 
     margin-bottom: 2.5rem; 
     text-transform: uppercase; 
     z-index: 3; 
@@ -41,7 +47,6 @@ html { scroll-behavior: smooth; }
 }
 .reveal-active { opacity: 1; transform: scale(1) translateY(0); }
 
-/* Rounded Rectangle Badge (Global Utility) */
 .section-badge { 
     display: inline-block; background: rgba(255, 255, 255, 0.08); 
     padding: 0.6rem 2.5rem; border-radius: 30px; 
@@ -50,7 +55,6 @@ html { scroll-behavior: smooth; }
     transition: all 0.3s ease;
 }
 
-/* Custom Targeted Rules to upscale the Dashboard Categories Main Badges */
 .dashboard-badge {
     font-size: clamp(1.1rem, 2.5vw, 1.4rem);
     padding: 0.9rem 4rem;
@@ -66,7 +70,14 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .page-home .home-container, .page-about .about-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; width: 100%; transform: scale(1.15); transform-origin: center center; padding: 0 5%; }
 .page-about .about-container { transform: scale(1); padding-top: 4rem; padding-bottom: 4rem; min-height: calc(100vh - 70px); min-height: calc(100dvh - 70px); }
 
-.page-home .home-container::before, .page-about .about-container::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(135deg, #000000, #111111, #000000); background-size: 400% 400%; animation: gradientBreathe 12s ease infinite; }
+/* Oversized container to allow scale transformation without showing edges */
+.page-home .home-container::before, .page-about .about-container::before { 
+    content: ""; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; z-index: -1; 
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 60%); 
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: radialBreathe 12s ease-in-out infinite; 
+}
 
 .magnet-logo { width: 190px; height: 190px; display: flex; justify-content: center; align-items: center; margin-bottom: 2.5rem; cursor: pointer; transition: transform 0.1s ease-out; }
 .magnet-logo img { max-width: 300px; height: auto; display: block; transition: filter 0.3s ease; }
@@ -97,10 +108,17 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 /* ==========================================================================
    3. PHOTOS & MULTIMEDIA GRIDS
    ========================================================================== */
-/* Dynamic Viewport Height used to perfectly center sliders on mobile regardless of scroll status */
 .snap-container { height: calc(100vh - 70px); height: calc(100dvh - 70px); overflow-y: scroll; scroll-snap-type: y mandatory; width: 100%; }
 .snap-section { height: calc(100vh - 70px); height: calc(100dvh - 70px); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; background-color: #000; padding: 0 5%; }
-.snap-section:first-of-type::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: linear-gradient(135deg, #000000, #111111, #000000); background-size: 400% 400%; animation: gradientBreathe 12s ease infinite; }
+
+/* Applies the cinematic pulse to the dashboard backgrounds */
+.snap-section:first-of-type::before { 
+    content: ""; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; z-index: 0; 
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 60%); 
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: radialBreathe 12s ease-in-out infinite; 
+}
 
 .section-bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; filter: grayscale(100%) brightness(35%); transition: opacity 0.8s ease; z-index: 1; pointer-events: none; }
 .vignette { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(0,0,0,0) 20%, rgba(0,0,0,0.95) 100%); z-index: 2; pointer-events: none; opacity: 0; transition: opacity 0.8s ease; }
@@ -118,14 +136,16 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .cat-item:hover .cat-icon-no-circle { transform: scale(1.4); }
 .cat-item:hover .cat-title { opacity: 1; transform: translateY(0); }
 
-/* GALLERY HEADERS (ICON + TEXT) */
+/* PERFECT GRID CENTERING: Forces the 7th item (Product Perfume Bottle) into the middle column */
+.page-photos .category-grid .cat-item:last-child {
+    grid-column: 2;
+}
+
 .gallery-header { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-bottom: 2.5rem; z-index: 3; }
 .gallery-icon { width: 50px; height: 50px; object-fit: contain; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 .reveal-active .gallery-icon { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)); transform: scale(1.15); }
-/* Update this existing rule */
 .gallery-header h2 { 
     font-family: 'Bebas Neue', sans-serif; 
-    /* Increased from clamp(2.2rem, 5vw, 3rem) to this: */
     font-size: clamp(3.5rem, 12vw, 5rem); 
     letter-spacing: 4px; 
     font-weight: 400; 
@@ -136,9 +156,44 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 
 .slider-wrapper { width: 100%; max-width: 950px; aspect-ratio: 3 / 2; border-radius: 40px; overflow: hidden; position: relative; z-index: 3; background: #050505; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
 .slider-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.6s ease-in-out; }
-.slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.5); border: none; color: #fff; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10; backdrop-filter: blur(5px); }
+.slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.5); border: none; color: #fff; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10; backdrop-filter: blur(5px); transition: background 0.3s; }
+.slider-btn:hover { background: rgba(0, 0, 0, 0.8); }
 .btn-prev { left: 20px; }
 .btn-next { right: 20px; }
+
+/* ISOLATED FLUID ASPECT RATIOS FOR COMPARISON SLIDER (REVERTED) */
+.slider-wrapper.fluid-comparison {
+    aspect-ratio: auto !important; 
+    height: auto !important;
+    max-height: 70vh; 
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slider-wrapper.fluid-comparison img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 70vh !important;
+    object-fit: contain !important;
+    display: block;
+}
+.after-container {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+    pointer-events: none;
+}
+.slider-handle {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: ew-resize; z-index: 10;
+}
+.comparison-line {
+    position: absolute;
+    top: 0; left: 50%; width: 2px; height: 100%;
+    background: #ffffff; z-index: 9;
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    transform: translateX(-50%);
+}
 
 /* ==========================================================================
    4. MULTIMEDIA GALLERIES
@@ -169,14 +224,34 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
    6. ABOUT PAGE (.page-about)
    ========================================================================== */
 .about-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 5%; text-align: center; }
-.about-hero-logo { width: 70px; margin-bottom: 1.5rem; }
 
+/* Unified Focus Pull Base States */
+.about-hero-logo { 
+    width: 70px; margin-bottom: 1.5rem; 
+    opacity: 0; filter: blur(12px); transform: scale(1.05); 
+}
 .about-headline { 
-    font-family: 'Bebas Neue', sans-serif; /* NEW */
-    font-size: clamp(3rem, 8vw, 4.5rem); /* Scaled up for extra impact */
+    font-family: 'Bebas Neue', sans-serif; 
+    font-size: clamp(3rem, 8vw, 4.5rem); 
     letter-spacing: 4px; 
     font-weight: 400; 
-    margin-bottom: 2rem; 
+    margin-bottom: 2rem;
+    -webkit-text-stroke: 0.8px #ffffff;
+    opacity: 0; filter: blur(12px); transform: scale(1.05);
+}
+
+/* Cinematic Keyframes */
+@keyframes focusPull { 
+    to { filter: blur(0px); opacity: 1; transform: scale(1); } 
+}
+
+.focus-active { 
+    animation: focusPull 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+/* Delays the headline so the Logo pulls into focus first */
+.about-headline.focus-active {
+    animation-delay: 0.3s;
 }
 
 .about-text-box { background: rgba(255, 255, 255, 0.00); padding: 2.5rem; border-radius: 20px; max-width: 800px; margin-bottom: 3rem; text-align: center; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); }
@@ -229,7 +304,6 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .floating-nav a { display: flex; align-items: center; justify-content: center; }
 .float-icon { width: 45px; height: 45px; object-fit: contain; filter: brightness(0.7); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .floating-nav a:hover .float-icon { filter: brightness(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)); transform: scale(1.3); }
-.separator { width: 1px; height: 40px; background: rgba(255, 255, 255, 0.2); }
 
 
 /* ==========================================================================
@@ -247,60 +321,87 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     .nav-links a { font-size: 0.75rem; } 
     .header { padding: 1rem 5%; }
     
-    /* 1. Mobile Home Hero Logo Fix */
     .magnet-logo { width: 120px; height: 120px; margin-bottom: 1.5rem; }
     .magnet-logo img { max-width: 100%; height: auto; }
 
-    /* 2. Mobile Home Icons Side-by-Side */
+    @keyframes logoBreathe {
+        0%, 100% { filter: drop-shadow(0 0 0px rgba(255,255,255,0)); }
+        50% { filter: drop-shadow(0 0 15px rgba(255,255,255,0.6)); }
+    }
+    @keyframes textWave {
+        0%, 100% { color: #ffffff; text-shadow: none; transform: scale(1); }
+        50% { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.8); transform: scale(1.05); }
+    }
+    .page-home .magnet-logo img { animation: logoBreathe 6s ease-in-out infinite; }
+    .page-home .glow-letter { animation: textWave 6s ease-in-out infinite; }
+
     .home-icons { flex-direction: row; gap: 1.5rem; flex-wrap: nowrap; justify-content: center; }
-    .icon-group { gap: 0.5rem; } /* Tightened vertical gap */
+    .icon-group { gap: 0.5rem; } 
     .icon-wrapper img { width: 70px; height: 70px; }
     .icon-badge { padding: 0.5rem 1.5rem; font-size: 0.75rem; letter-spacing: 4px; }
     
-    /* 3. Photos Grid Mobile Fix (3 Columns x 2 Rows) */
     .category-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem 0.5rem; width: 100%; padding: 0; } 
     .cat-icon-no-circle { width: 50px; height: 50px; margin: 0 auto; }
     
-    /* 4. Disable Text Reveal on Mobile Categories - Permanent Text */
     .cat-title { font-size: 0.65rem; margin-top: 5px; opacity: 1 !important; transform: translateY(0) !important; letter-spacing: 1px; }
 
-    /* 5. Multimedia Single Row Fix */
     #mm-category-grid { gap: 1rem; flex-wrap: wrap; justify-content: center; }
     #mm-category-grid .category-header-wrapper { flex-basis: 100%; margin-bottom: 0; }
     #mm-category-grid .cat-item { width: 30%; }
 
     .slider-wrapper { border-radius: 20px; }
+    
+    .slider-wrapper.fluid-comparison { max-height: 60vh; }
+    .slider-wrapper.fluid-comparison img { max-height: 60vh !important; }
+    
     .about-text-box { padding: 1.5rem; }
     .dashboard-badge { font-size: 0.9rem; padding: 0.5rem 1.5rem; letter-spacing: 2px; }
     .category-main-icon { width: 40px; }
 
-    /* 6. Robust Mobile Floating Nav Sizing */
-    .floating-nav { 
-        width: 90vw; /* Forces it to fill the screen edges */
-        padding: 1rem 1.5rem; 
-        gap: 1.5rem; 
-        border-radius: 40px; 
+    .page-photos .floating-nav { 
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        width: 95vw;
+        padding: 0 0; 
+        gap: 0; 
+        border-radius: 25px; 
         bottom: 20px; 
-        justify-content: space-evenly; /* Spaces icons perfectly across the width */
-        flex-wrap: wrap; /* THE MAGIC: Allows icons to wrap to a new line if needed! */
     }
-    .float-icon { width: 35px; height: 35px; } /* Massive size increase for mobile */
-    .separator { display: none; } /* Hide separators on mobile so wrapping looks flawless */
-/* --- MOBILE ALIGNMENT FIXES --- */
+    
+    .page-photos .floating-nav a:nth-child(1), 
+    .page-photos .floating-nav a:nth-child(2), 
+    .page-photos .floating-nav a:nth-child(3) {
+        grid-column: span 4;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1rem 0;
+    }
+    
+    .page-photos .floating-nav a:nth-child(n+4) {
+        grid-column: span 3;
+        padding: 0.8rem 0;
+    }
+    
+    .page-photos .floating-nav a:nth-child(1), 
+    .page-photos .floating-nav a:nth-child(2),
+    .page-photos .floating-nav a:nth-child(4), 
+    .page-photos .floating-nav a:nth-child(5), 
+    .page-photos .floating-nav a:nth-child(6) {
+        border-right: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    
+    .float-icon { width: 35px; height: 35px; margin: 0 auto; } 
 
-    /* 1. Safely restore the header to the normal document flow */
+    /* --- MOBILE ALIGNMENT FIXES --- */
     .page-photos .gallery-header {
         position: relative !important;
         top: auto !important;
         margin-bottom: 1.5rem !important;
     }
 
-    /* 2. Invisible Counter-Weight trick: pushes the whole block up so the slider sits in the exact center */
     .slider-wrapper {
         margin-bottom: 15vh; 
     }
 
-    /* 3. Hoist the Section 1 Dashboards (Photos & Multimedia) upward */
     #categories .category-grid, 
     #multimedia-dash #mm-category-grid {
         margin-top: -12vh; 
@@ -312,59 +413,43 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     .nav-links { gap: 0.8rem; }
     .nav-links a { font-size: 0.65rem; }
 
-    /* Extra safety padding for extremely narrow screens like older iPhones */
     .home-icons { gap: 1rem; }
     .icon-wrapper img { width: 60px; height: 60px; }
     .cat-icon-no-circle { width: 45px; height: 45px; }
     .cat-title { font-size: 0.55rem; letter-spacing: 0px; }
-    /* Extra safety padding for smaller phones */
-    .floating-nav { 
-        width: 95vw; /* Fills even more of the edge on tiny screens */
-        padding: 1rem; 
-        gap: 1rem; 
-    }
-    .float-icon { width: 30px; height: 30px; } /* Still much larger than your previous 22px */
-    .separator { height: 20px; }
+    
+    .float-icon { width: 30px; height: 30px; } 
+
 /* ==========================================================================
    9. ULTRA-NARROW SCREEN CATCH-ALL (Sub-400px devices)
    ========================================================================== */
 @media (max-width: 400px) {
-    /* Stack the header elegantly */
     .header { 
         flex-direction: column; 
         gap: 0.8rem; 
         padding: 1.2rem 2%; 
     }
     
-    /* Center the navigation links */
     .nav-links { 
         width: 100%; 
         justify-content: center; 
         gap: 0.8rem; 
     }
     
-    /* Slightly shrink nav text to fit all 4 words */
     .nav-links a { 
         font-size: 0.6rem; 
         letter-spacing: 1px; 
     }
     
-    /* Tighten the Home page badges so they don't touch the screen edges */
     .icon-badge {
         padding: 0.5rem 1rem;
         font-size: 0.65rem;
         letter-spacing: 2px;
     }
     
-    /* Ensure the home icons container doesn't force a horizontal scroll */
     .home-icons {
         gap: 0.5rem;
         width: 100%;
-    }
-/* Make the nav adapt vertically for ultra-narrow screens */
-    .floating-nav {
-        gap: 1.2rem 1rem; /* Adds row gap so wrapped icons don't touch vertically */
-        border-radius: 25px; /* Softens the corners since the box becomes taller when wrapped */
     }
 }
 }
