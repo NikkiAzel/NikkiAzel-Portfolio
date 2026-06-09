@@ -24,7 +24,7 @@ body {
 
 html { scroll-behavior: smooth; }
 
-/* HEADER & FOOTER */
+/* HEADER & LOGO */
 .header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; position: sticky; top: 0; z-index: 1000; background: #000000; border-bottom: 1px solid #111; width: 100%; }
 .header-logo { display: flex; align-items: center; gap: 1rem; cursor: pointer; text-decoration: none; font-family: 'Montserrat', sans-serif; font-weight: 100; letter-spacing: 5px; }
 .header-logo img { max-width: 30px; height: auto; display: block; }
@@ -35,7 +35,31 @@ html { scroll-behavior: smooth; }
 .nav-links a { text-decoration: none !important; color: #fff; font-family: 'Montserrat', sans-serif; font-weight: 100; letter-spacing: 2px; font-size: 0.8rem; padding-bottom: 4px; border-bottom: 1px solid transparent; transition: opacity 0.3s ease; opacity: 0.6; }
 .nav-links a.active, .nav-links a:hover { opacity: 1; font-weight: 700; }
 
-.footer { text-align: center; padding: 1.5rem; background: #000000; font-family: 'Montserrat', sans-serif; font-weight: 300; font-size: 0.75rem; letter-spacing: 4px; color: #ffffff; border-top: 1px solid #111; width: 100%; }
+/* ==========================================================================
+   FOOTER (Transparent Cinematic Gradient)
+   ========================================================================== */
+.footer, .footer-section { 
+    text-align: center; 
+    /* Increased top padding gives the gradient more room to fade smoothly */
+    padding: 4rem 2rem 2rem 2rem !important; 
+    
+    /* Cinematic gradient: Solid black at the bottom, 100% transparent at the top */
+    background: linear-gradient(to top, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 100%) !important; 
+    position: relative; 
+    z-index: 50; 
+    
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 300; 
+    font-size: 0.75rem; 
+    letter-spacing: 4px; 
+    color: #ffffff; 
+    border-top: none !important; 
+    
+    width: 100%; 
+    height: max-content !important; 
+    min-height: 0 !important; 
+    flex-shrink: 0 !important; 
+}
 
 /* ANIMATIONS & EFFECTS */
 @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
@@ -48,7 +72,15 @@ html { scroll-behavior: smooth; }
     100% { transform: scale(1); opacity: 0.6; }
 }
 
+/* PORTFOLIO 2026 Loop (Strictly 100% to 70% Opacity) */
+@keyframes textBreathe {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+.portfolio-2026-text { animation: textBreathe 3s infinite ease-in-out; display: inline-block; }
+
 .header, .home-container, .snap-container, .gallery-grid, .about-container { animation: pageFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
 .reveal-text { 
     font-family: 'Bebas Neue', sans-serif; 
     font-size: clamp(2.2rem, 5vw, 3rem); 
@@ -86,10 +118,8 @@ html { scroll-behavior: smooth; }
 body.home-bg-glow { background-color: #000000; background-image: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.05), transparent 40%); }
 .page-home .home-container, .page-about .about-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; width: 100%; padding: 0 5%; }
 
-/* FIX: Removes geometry stretching that caused snapping, just centers normally */
 .page-home .home-container { transform: scale(1.15); transform-origin: center center; }
 
-/* FIX: Allows normal vertical flow, killing the flexbox clipping snap bug */
 .page-about .about-container { 
     padding-top: 4rem; 
     padding-bottom: 4rem; 
@@ -97,7 +127,6 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     justify-content: flex-start; 
 }
 
-/* FIX: Changed height:120% to transform:scale(1.2) so it doesn't add physical scroll space to the layout */
 .page-home .home-container::before, .page-about .about-container::before { 
     content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; 
     background: radial-gradient(circle at center, #1a1a1a 0%, #000000 60%); 
@@ -180,9 +209,6 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     -webkit-text-stroke: 0.8px #ffffff;
 }
 
-/* ==========================================================================
-   SLIDERS & COMPARISON ENGINE
-   ========================================================================== */
 .slider-wrapper { width: 100%; max-width: 950px; border-radius: 40px; overflow: hidden; position: relative; z-index: 3; background: #050505; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
 .slider-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.6s ease-in-out; }
 .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.5); border: none; color: #fff; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10; backdrop-filter: blur(5px); transition: background 0.3s; }
@@ -190,7 +216,7 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .btn-prev { left: 20px; }
 .btn-next { right: 20px; }
 
-/* FIX: Absolute Shape Lock for Before/After photos so they never move or have borders */
+/* ISOLATED FLUID ASPECT RATIOS FOR COMPARISON SLIDER */
 .slider-wrapper.fluid-comparison {
     aspect-ratio: 3 / 2 !important; 
     height: auto !important;
@@ -233,6 +259,7 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; width: 100%; max-width: 1400px; margin: 0 auto; z-index: 5; }
 .masonry-grid { display: block; column-count: 3; column-gap: 15px; width: 100%; max-width: 1400px; margin: 0 auto; padding-bottom: 50px; }
 .gallery-item { break-inside: avoid; margin-bottom: 15px; overflow: hidden; border-radius: 10px; background: #080808; cursor: zoom-in; border: 1px solid rgba(255, 255, 255, 0.15); box-sizing: border-box; transition: transform 0.3s ease; position: relative; }
+
 .gallery-grid .gallery-item { aspect-ratio: 1 / 1; }
 .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .masonry-grid .gallery-item img { height: auto; }
@@ -254,15 +281,14 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 /* ==========================================================================
    6. ABOUT PAGE (.page-about)
    ========================================================================== */
+.about-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 4rem 5%; text-align: center; }
 
-/* FIX: Tighter Logo spacing */
 .about-hero-logo { 
     width: 70px; 
     margin: 0 auto 0.2rem auto !important; 
     opacity: 0; filter: blur(12px); transform: scale(1.05); 
 }
 
-/* FIX: Tighter gap, larger headline font */
 .about-headline { 
     font-family: 'Bebas Neue', sans-serif; 
     font-size: clamp(4.5rem, 12vw, 6.5rem) !important; 
@@ -293,7 +319,6 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 
 .contact-box { margin-bottom: 5rem; display: flex; justify-content: center; }
 
-/* FIX: Reduced LinkedIn Icon Size */
 .linkedin-icon { width: 28px !important; filter: brightness(0.7); transition: transform 0.3s ease, filter 0.3s ease; }
 .linkedin-icon:hover { transform: scale(1.15); filter: brightness(1); }
 
@@ -367,15 +392,10 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Desktop Hover Triggers */
 @media (min-width: 769px) {
     #studio-gallery .gallery-item:hover .studio-overlay { opacity: 1; }
     #studio-gallery .gallery-item:hover .gallery-image-name { opacity: 1; transform: translateY(0); }
 }
-
-/* FIX: Footer Snap Isolation */
-.footer-section { height: auto !important; min-height: 80px; }
-.snap-container .footer-section { scroll-snap-align: end; } /* ONLY snap if inside a valid container */
 
 /* ==========================================================================
    8. RESPONSIVE DESIGN & MOBILE OPTIMIZATION
@@ -387,8 +407,6 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     .skills-container { flex-direction: column; align-items: center; gap: 4rem; }
 }
 @media (max-width: 768px) {
-    /* MOBILE: Disable Smooth Scroll completely to prevent touch snapping bugs */
-    html { scroll-behavior: auto !important; }
     
     .logo-text { display: none !important; }
     .nav-links { gap: 1.2rem; } 
@@ -481,7 +499,6 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
         margin-top: -12vh; 
     }
 
-    /* FIX: PERMANENTLY SHOW STUDIO TEXT ON MOBILE (Disables hover requirement) */
     #studio-gallery .studio-overlay,
     #studio-gallery .gallery-image-name {
         opacity: 1 !important;
