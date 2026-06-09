@@ -26,7 +26,7 @@ html { scroll-behavior: smooth; }
 /* HEADER & FOOTER */
 .header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; position: sticky; top: 0; z-index: 1000; background: #000000; border-bottom: 1px solid #111; width: 100%; }
 .header-logo { display: flex; align-items: center; gap: 1rem; cursor: pointer; text-decoration: none; font-family: 'Montserrat', sans-serif; font-weight: 100; letter-spacing: 5px; }
-.header-logo img { max-width: 50px; height: auto; display: block; }
+.header-logo img { max-width: 30px; height: auto; display: block; }
 .logo-text { font-family: 'Montserrat', sans-serif; font-weight: 300; letter-spacing: 5px; font-size: 1rem; color: #ffffff; opacity: 0; transform: translateX(-15px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .header-logo:hover .logo-text { opacity: 1; transform: translateX(0); }
 
@@ -221,7 +221,10 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .page-multimedia .snap-section.has-gallery, .page-multimedia #studio-arts { height: auto !important; min-height: 100vh !important; min-height: 100dvh !important; overflow-y: auto !important; display: block !important; padding-top: 100px; padding-bottom: 50px; background-color: #000; }
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; width: 100%; max-width: 1400px; margin: 0 auto; z-index: 5; }
 .masonry-grid { display: block; column-count: 3; column-gap: 15px; width: 100%; max-width: 1400px; margin: 0 auto; padding-bottom: 50px; }
-.gallery-item { break-inside: avoid; margin-bottom: 15px; overflow: hidden; border-radius: 10px; background: #080808; cursor: zoom-in; border: 1px solid rgba(255, 255, 255, 0.15); box-sizing: border-box; transition: transform 0.3s ease; }
+
+/* FIX: Position relative added here to contain the absolute text overlay perfectly */
+.gallery-item { break-inside: avoid; margin-bottom: 15px; overflow: hidden; border-radius: 10px; background: #080808; cursor: zoom-in; border: 1px solid rgba(255, 255, 255, 0.15); box-sizing: border-box; transition: transform 0.3s ease; position: relative; }
+
 .gallery-grid .gallery-item { aspect-ratio: 1 / 1; }
 .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .masonry-grid .gallery-item img { height: auto; }
@@ -327,6 +330,51 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 
 
 /* ==========================================================================
+   CINEMATIC STUDIO OVERLAY
+   ========================================================================== */
+
+/* The dark gradient */
+#studio-gallery .studio-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%; /* Covers the bottom half of the image */
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none; /* Allows the zoom-cursor to still work */
+    display: flex;
+    align-items: flex-end; /* Pushes the text to the bottom */
+    padding: 15px 20px;
+}
+
+/* The custom text starting position */
+#studio-gallery .gallery-image-name {
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    opacity: 0;
+    transform: translateY(15px); /* Starts slightly lower for the slide-up effect */
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Desktop Hover Triggers */
+@media (min-width: 769px) {
+    #studio-gallery .gallery-item:hover .studio-overlay {
+        opacity: 1;
+    }
+    #studio-gallery .gallery-item:hover .gallery-image-name {
+        opacity: 1;
+        transform: translateY(0); /* Slides into final position */
+    }
+}
+
+.footer-section { height: auto !important; min-height: 80px; scroll-snap-align: end; }
+
+/* ==========================================================================
    8. RESPONSIVE DESIGN & MOBILE OPTIMIZATION
    ========================================================================== */
 @media (max-width: 1024px) { 
@@ -426,7 +474,16 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     #multimedia-dash #mm-category-grid {
         margin-top: -12vh; 
     }
+
+    /* PERMANENTLY SHOW STUDIO TEXT ON MOBILE (Disables hover requirement) */
+    #studio-gallery .studio-overlay,
+    #studio-gallery .gallery-image-name {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        pointer-events: none !important; /* Ensures it doesn't block tapping on the photo */
+    }
 }
+
 @media (max-width: 600px) { 
     .masonry-grid { column-count: 1; } 
     .video-item { flex: 0 0 100%; } 
@@ -439,6 +496,7 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     .cat-title { font-size: 0.55rem; letter-spacing: 0px; }
     
     .float-icon { width: 30px; height: 30px; } 
+}
 
 /* ==========================================================================
    9. ULTRA-NARROW SCREEN CATCH-ALL (Sub-400px devices)
@@ -472,5 +530,3 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
         width: 100%;
     }
 }
-}
-.footer-section { height: auto !important; min-height: 80px; scroll-snap-align: end; }

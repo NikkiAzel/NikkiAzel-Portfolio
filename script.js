@@ -248,8 +248,43 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. MULTIMEDIA GALLERIES (.page-multimedia)
     // ==========================================
     if (document.body.classList.contains('page-multimedia')) {
+        
+        // 1. YOUR CUSTOM NAMES LIST (30 Unique Names)
+        const studioProjectNames = [
+            "Mastermind | 2017",
+            "Venom of Fear | 2017",
+            "Shut-gun | 2017",
+            "Ouroboros | 2016",
+            "Jormungand | 2016",
+            "Moon Eater | 2016",
+            "Hydralisk | 2020",
+            "Ages of Time | 2017",
+            "Silence | 2016",
+            "Castle | 2015",
+            "Knight of Stone | 2015",
+            "Halberd Knight | 2024",
+            "Chest of Insight | 2015",
+            "Durc the Orc | 2015",
+            "Executioner Mask | 2015",
+            "Gas Mask | 2014",
+            "Steampunk hat | 2014",
+            "Fruit | 2014",
+            "Beauty of Flowers | 2014",
+            "Nature's Call | 2014",
+            "Tuji Bunny | 2025",
+            "Shooky | 2026",
+            "Tata | 2025",
+            "Cooky | 2025",
+            "Chimmy | 2025",
+            "Hornet | 2025",
+            "Mudrock | 2025",
+            "Koya | 2025",
+            "Dodoco | 2025",
+            "Mang | 2025"
+        ];
+
         const galleryConfigs = [
-            { id: 'studio-gallery', count: 30, path: 'assets/photos/studio/s-' },
+            { id: 'studio-gallery', count: 30, path: 'assets/photos/studio/s-', names: studioProjectNames },
             { id: 'graphic-gallery', count: 23, path: 'assets/photos/graphic/g-' }
         ];
 
@@ -269,6 +304,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 img.loading = "lazy"; 
                 
                 item.appendChild(img);
+
+                // --- CINEMATIC TEXT OVERLAY: Only applies to Studio ---
+                if (config.id === 'studio-gallery') {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'studio-overlay';
+                    
+                    const name = document.createElement('span');
+                    name.className = 'gallery-image-name';
+                    
+                    // Assign name from array or fallback
+                    if (config.names && config.names[i - 1]) {
+                        name.textContent = config.names[i - 1];
+                    } else {
+                        name.textContent = `Studio Artwork ${i}`; 
+                    }
+                    
+                    overlay.appendChild(name);
+                    item.appendChild(overlay);
+                }
+                // ------------------------------------------------
+
                 fragment.appendChild(item);
             }
             container.appendChild(fragment);
