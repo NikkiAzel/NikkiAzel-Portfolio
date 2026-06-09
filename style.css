@@ -5,20 +5,21 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* FIX: Added strict width and overflow locks to both HTML and Body */
-html, body { 
+/* HORIZONTAL SCROLL LOCK */
+html { 
     overflow-x: hidden; 
-    max-width: 100vw; 
 }
-
 body { 
+    overflow-x: hidden; 
+    width: 100%; 
+    max-width: 100vw; 
+    position: relative; /* Prevents overflow escapes on iOS */
     font-family: 'Roboto', sans-serif; 
     background: #000000; 
     color: #ffffff; 
     min-height: 100vh; 
     display: flex; 
     flex-direction: column; 
-    width: 100%; 
 }
 
 html { scroll-behavior: smooth; }
@@ -40,7 +41,7 @@ html { scroll-behavior: smooth; }
 @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 @keyframes pageFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Cinematic GPU-Accelerated Radial Breathe (No Lag) */
+/* Cinematic GPU-Accelerated Radial Breathe */
 @keyframes radialBreathe {
     0% { transform: scale(1); opacity: 0.6; }
     50% { transform: scale(1.15); opacity: 1; }
@@ -83,15 +84,26 @@ html { scroll-behavior: smooth; }
    2. HOME & ABOUT PAGE BACKGROUNDS
    ========================================================================== */
 body.home-bg-glow { background-color: #000000; background-image: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.05), transparent 40%); }
-.page-home .home-container, .page-about .about-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; width: 100%; transform: scale(1.15); transform-origin: center center; padding: 0 5%; }
-.page-about .about-container { transform: scale(1); padding-top: 4rem; padding-bottom: 4rem; min-height: calc(100vh - 70px); min-height: calc(100dvh - 70px); }
+.page-home .home-container, .page-about .about-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; width: 100%; padding: 0 5%; }
 
-/* Oversized container to allow scale transformation without showing edges */
+/* FIX: Removes geometry stretching that caused snapping, just centers normally */
+.page-home .home-container { transform: scale(1.15); transform-origin: center center; }
+
+/* FIX: Allows normal vertical flow, killing the flexbox clipping snap bug */
+.page-about .about-container { 
+    padding-top: 4rem; 
+    padding-bottom: 4rem; 
+    min-height: calc(100vh - 70px); 
+    justify-content: flex-start; 
+}
+
+/* FIX: Changed height:120% to transform:scale(1.2) so it doesn't add physical scroll space to the layout */
 .page-home .home-container::before, .page-about .about-container::before { 
-    content: ""; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; z-index: -1; 
+    content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; 
     background: radial-gradient(circle at center, #1a1a1a 0%, #000000 60%); 
     background-position: center;
     background-repeat: no-repeat;
+    transform: scale(1.2);
     animation: radialBreathe 12s ease-in-out infinite; 
 }
 
@@ -127,7 +139,6 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .snap-container { height: calc(100vh - 70px); height: calc(100dvh - 70px); overflow-y: scroll; scroll-snap-type: y mandatory; width: 100%; }
 .snap-section { height: calc(100vh - 70px); height: calc(100dvh - 70px); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; background-color: #000; padding: 0 5%; }
 
-/* Applies the cinematic pulse to the dashboard backgrounds */
 .snap-section:first-of-type::before { 
     content: ""; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; z-index: 0; 
     background: radial-gradient(circle at center, #1a1a1a 0%, #000000 60%); 
@@ -152,7 +163,6 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .cat-item:hover .cat-icon-no-circle { transform: scale(1.4); }
 .cat-item:hover .cat-title { opacity: 1; transform: translateY(0); }
 
-/* PERFECT GRID CENTERING: Forces the 7th item (Product Perfume Bottle) into the middle column */
 .page-photos .category-grid .cat-item:last-child {
     grid-column: 2;
 }
@@ -170,25 +180,28 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     -webkit-text-stroke: 0.8px #ffffff;
 }
 
-.slider-wrapper { width: 100%; max-width: 950px; aspect-ratio: 3 / 2; border-radius: 40px; overflow: hidden; position: relative; z-index: 3; background: #050505; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+/* ==========================================================================
+   SLIDERS & COMPARISON ENGINE
+   ========================================================================== */
+.slider-wrapper { width: 100%; max-width: 950px; border-radius: 40px; overflow: hidden; position: relative; z-index: 3; background: #050505; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
 .slider-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.6s ease-in-out; }
 .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.5); border: none; color: #fff; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10; backdrop-filter: blur(5px); transition: background 0.3s; }
 .slider-btn:hover { background: rgba(0, 0, 0, 0.8); }
 .btn-prev { left: 20px; }
 .btn-next { right: 20px; }
 
-/* ISOLATED FLUID ASPECT RATIOS FOR COMPARISON SLIDER */
+/* FIX: Absolute Shape Lock for Before/After photos so they never move or have borders */
 .slider-wrapper.fluid-comparison {
-    aspect-ratio: auto !important; 
+    aspect-ratio: 3 / 2 !important; 
     height: auto !important;
-    max-height: 70vh; 
+    max-height: none !important; 
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .slider-wrapper.fluid-comparison img {
     width: 100% !important;
-    height: auto !important;
-    max-height: 70vh !important;
-    object-fit: contain !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
     display: block;
 }
 .after-container {
@@ -201,8 +214,6 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
     opacity: 0; cursor: ew-resize; z-index: 10;
-    
-    /* V4 CSS LOCK: Blocks browser gestures when interacting with the handle */
     touch-action: none; 
     -webkit-touch-callout: none;
 }
@@ -221,10 +232,7 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .page-multimedia .snap-section.has-gallery, .page-multimedia #studio-arts { height: auto !important; min-height: 100vh !important; min-height: 100dvh !important; overflow-y: auto !important; display: block !important; padding-top: 100px; padding-bottom: 50px; background-color: #000; }
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; width: 100%; max-width: 1400px; margin: 0 auto; z-index: 5; }
 .masonry-grid { display: block; column-count: 3; column-gap: 15px; width: 100%; max-width: 1400px; margin: 0 auto; padding-bottom: 50px; }
-
-/* FIX: Position relative added here to contain the absolute text overlay perfectly */
 .gallery-item { break-inside: avoid; margin-bottom: 15px; overflow: hidden; border-radius: 10px; background: #080808; cursor: zoom-in; border: 1px solid rgba(255, 255, 255, 0.15); box-sizing: border-box; transition: transform 0.3s ease; position: relative; }
-
 .gallery-grid .gallery-item { aspect-ratio: 1 / 1; }
 .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .masonry-grid .gallery-item img { height: auto; }
@@ -246,24 +254,28 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 /* ==========================================================================
    6. ABOUT PAGE (.page-about)
    ========================================================================== */
-.about-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 5%; text-align: center; }
 
-/* Unified Focus Pull Base States */
+/* FIX: Tighter Logo spacing */
 .about-hero-logo { 
-    width: 70px; margin-bottom: 1.5rem; 
+    width: 70px; 
+    margin: 0 auto 0.2rem auto !important; 
     opacity: 0; filter: blur(12px); transform: scale(1.05); 
 }
+
+/* FIX: Tighter gap, larger headline font */
 .about-headline { 
     font-family: 'Bebas Neue', sans-serif; 
-    font-size: clamp(3rem, 8vw, 4.5rem); 
+    font-size: clamp(4.5rem, 12vw, 6.5rem) !important; 
     letter-spacing: 4px; 
     font-weight: 400; 
-    margin-bottom: 2rem;
+    margin-top: 0 !important; 
+    margin-bottom: 2rem !important;
+    padding-top: 0 !important;
+    line-height: 1;
     -webkit-text-stroke: 0.8px #ffffff;
     opacity: 0; filter: blur(12px); transform: scale(1.05);
 }
 
-/* Cinematic Keyframes */
 @keyframes focusPull { 
     to { filter: blur(0px); opacity: 1; transform: scale(1); } 
 }
@@ -272,7 +284,6 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     animation: focusPull 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
 }
 
-/* Delays the headline so the Logo pulls into focus first */
 .about-headline.focus-active {
     animation-delay: 0.3s;
 }
@@ -281,7 +292,9 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .about-text { margin-bottom: 0; line-height: 1.8; font-weight: 300; font-size: clamp(1rem, 2vw, 1.15rem); color: rgba(255, 255, 255, 0.85); }
 
 .contact-box { margin-bottom: 5rem; display: flex; justify-content: center; }
-.linkedin-icon { width: 45px; filter: brightness(0.7); transition: transform 0.3s ease, filter 0.3s ease; }
+
+/* FIX: Reduced LinkedIn Icon Size */
+.linkedin-icon { width: 28px !important; filter: brightness(0.7); transition: transform 0.3s ease, filter 0.3s ease; }
 .linkedin-icon:hover { transform: scale(1.15); filter: brightness(1); }
 
 .skills-container { width: 100%; max-width: 1100px; display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 6rem; }
@@ -309,17 +322,14 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     position: fixed; bottom: 30px; left: 50%;
     transform: translateX(-50%) translateY(100px); 
     opacity: 0;
-    
     background: linear-gradient(135deg, rgba(30, 30, 30, 0.8), rgba(0, 0, 0, 0.95));
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-    
     padding: 1.4rem 3rem;
     border-radius: 60px;
     display: flex; align-items: center; gap: 2.5rem;
     z-index: 9999;
-    
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
     pointer-events: none;
 }
@@ -328,28 +338,24 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
 .float-icon { width: 45px; height: 45px; object-fit: contain; filter: brightness(0.7); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .floating-nav a:hover .float-icon { filter: brightness(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)); transform: scale(1.3); }
 
-
 /* ==========================================================================
    CINEMATIC STUDIO OVERLAY
    ========================================================================== */
-
-/* The dark gradient */
 #studio-gallery .studio-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 50%; /* Covers the bottom half of the image */
+    height: 50%;
     background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%);
     opacity: 0;
     transition: opacity 0.4s ease;
-    pointer-events: none; /* Allows the zoom-cursor to still work */
+    pointer-events: none;
     display: flex;
-    align-items: flex-end; /* Pushes the text to the bottom */
+    align-items: flex-end; 
     padding: 15px 20px;
 }
 
-/* The custom text starting position */
 #studio-gallery .gallery-image-name {
     color: #ffffff;
     font-family: 'Montserrat', sans-serif;
@@ -357,22 +363,19 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     font-weight: 300;
     letter-spacing: 2px;
     opacity: 0;
-    transform: translateY(15px); /* Starts slightly lower for the slide-up effect */
+    transform: translateY(15px);
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Desktop Hover Triggers */
 @media (min-width: 769px) {
-    #studio-gallery .gallery-item:hover .studio-overlay {
-        opacity: 1;
-    }
-    #studio-gallery .gallery-item:hover .gallery-image-name {
-        opacity: 1;
-        transform: translateY(0); /* Slides into final position */
-    }
+    #studio-gallery .gallery-item:hover .studio-overlay { opacity: 1; }
+    #studio-gallery .gallery-item:hover .gallery-image-name { opacity: 1; transform: translateY(0); }
 }
 
-.footer-section { height: auto !important; min-height: 80px; scroll-snap-align: end; }
+/* FIX: Footer Snap Isolation */
+.footer-section { height: auto !important; min-height: 80px; }
+.snap-container .footer-section { scroll-snap-align: end; } /* ONLY snap if inside a valid container */
 
 /* ==========================================================================
    8. RESPONSIVE DESIGN & MOBILE OPTIMIZATION
@@ -384,6 +387,9 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
     .skills-container { flex-direction: column; align-items: center; gap: 4rem; }
 }
 @media (max-width: 768px) {
+    /* MOBILE: Disable Smooth Scroll completely to prevent touch snapping bugs */
+    html { scroll-behavior: auto !important; }
+    
     .logo-text { display: none !important; }
     .nav-links { gap: 1.2rem; } 
     .nav-links a { font-size: 0.75rem; } 
@@ -475,12 +481,12 @@ body.home-bg-glow { background-color: #000000; background-image: radial-gradient
         margin-top: -12vh; 
     }
 
-    /* PERMANENTLY SHOW STUDIO TEXT ON MOBILE (Disables hover requirement) */
+    /* FIX: PERMANENTLY SHOW STUDIO TEXT ON MOBILE (Disables hover requirement) */
     #studio-gallery .studio-overlay,
     #studio-gallery .gallery-image-name {
         opacity: 1 !important;
         transform: translateY(0) !important;
-        pointer-events: none !important; /* Ensures it doesn't block tapping on the photo */
+        pointer-events: none !important; 
     }
 }
 

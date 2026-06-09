@@ -211,20 +211,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             baSlider.addEventListener('input', (e) => moveSlider(e.target.value));
 
-            // V4: Mobile Screen Lock Implementation
             baSlider.addEventListener('touchmove', (e) => {
-                // THE LOCK: This line physically freezes the screen's scrolling engine while dragging
                 e.preventDefault(); 
-                
                 const rect = baSlider.getBoundingClientRect();
                 const touchX = e.touches[0].clientX - rect.left;
                 const percentage = (touchX / rect.width) * 100;
-                
                 const constrainedVal = Math.max(0, Math.min(100, percentage));
-                
                 baSlider.value = constrainedVal;
                 moveSlider(constrainedVal);
-            }, { passive: false }); // passive must be false to allow the lock to work
+            }, { passive: false });
 
             const updateComparisonPair = () => {
                 beforeImg.src = `assets/photos/comparison/before-${baIndex}.jpg`;
@@ -377,6 +372,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if(aboutLogo) cinematicObserver.observe(aboutLogo);
         if(aboutHead) cinematicObserver.observe(aboutHead);
 
+        // PERFORMANCE FIX: RequestAnimationFrame replacing setInterval
         const skillObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -385,19 +381,26 @@ document.addEventListener("DOMContentLoaded", () => {
                     const color = el.getAttribute('data-color');
                     let count = 0;
                     
-                    const interval = setInterval(() => {
-                        count++;
+                    function updateCircle() {
+                        count += 2;
+                        if (count > percent) count = percent;
+                        
                         el.style.background = `conic-gradient(#222 ${100 - count}%, ${color} ${100 - count}%)`;
                         el.querySelector('.percent-text').textContent = count + '%';
-                        if (count >= percent) clearInterval(interval);
-                    }, 10);
+                        
+                        if (count < percent) {
+                            requestAnimationFrame(updateCircle);
+                        }
+                    }
+                    requestAnimationFrame(updateCircle);
                     
                     skillObserver.unobserve(el);
                 }
             });
-        }, { threshold: 0.5 });
+        }, { threshold: 0.2 });
         document.querySelectorAll('.skill-circle').forEach(circle => skillObserver.observe(circle));
 
+        // PERFORMANCE FIX: RequestAnimationFrame replacing setInterval
         const barObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -410,18 +413,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     setTimeout(() => { fill.style.width = percent + '%'; }, 100);
                     
                     let count = 0;
-                    const stepTime = 1500 / percent; 
                     
-                    const interval = setInterval(() => {
-                        count++;
+                    function updateBar() {
+                        count += 2;
+                        if (count > percent) count = percent;
                         pctText.textContent = count + '%';
-                        if (count >= percent) clearInterval(interval);
-                    }, stepTime);
+                        
+                        if (count < percent) {
+                            requestAnimationFrame(updateBar);
+                        }
+                    }
+                    requestAnimationFrame(updateBar);
                     
                     barObserver.unobserve(row);
                 }
             });
-        }, { threshold: 0.5 });
+        }, { threshold: 0.2 });
         document.querySelectorAll('.bar-skill-row').forEach(row => barObserver.observe(row));
     }
 
